@@ -1,20 +1,22 @@
-import os, weaviate, json
+import os, weaviate, json, configparser
 from weaviate_functions import create_schema, import_data
 from query_functions import create_weaviate_client, get_documentation_with_concepts
 
 
-# OpenAI Token
-api_tkn = "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"
+config = configparser.ConfigParser()
+config.read('keys.ini')
+openai_api_key = config.get('api_keys', 'openai_api_key')
+weaviate_api_key = config.get('api_keys', 'weaviate_api_key')
 
 # Weaviate Auth
-auth_config = weaviate.auth.AuthApiKey(api_key="Sj3CzKRdC7wg0oDwrGSiaKOzobC2qKOjmbqk")  # Replace w/ your API Key for the Weaviate instance
+auth_config = weaviate.auth.AuthApiKey(api_key=weaviate_api_key)  # Replace w/ your API Key for the Weaviate instance
 
 # Instantiate Weaviate client
 client = weaviate.Client(
     url="https://gablivia--eagleai-dev-k6qpkg84.weaviate.network",
     auth_client_secret=auth_config,
     additional_headers={
-        "X-OpenAI-Api-Key": api_tkn  # Or "X-Cohere-Api-Key" or "X-HuggingFace-Api-Key"
+        "X-OpenAI-Api-Key": openai_api_key  # Or "X-Cohere-Api-Key" or "X-HuggingFace-Api-Key"
     }
 )
 
